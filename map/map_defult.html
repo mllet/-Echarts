@@ -103,12 +103,14 @@
                         mapType: '100000', // 自定义扩展图表类型
                         label: {
                             normal: {
+                                show: true,//地区名字显示
                                 textStyle: {
                                     // color: '#fff'//地区名称颜色设置
                                     color: '#fff'//地区名称颜色设置
                                 }
                             },
                             emphasis: {
+                                show:true,
                                 textStyle: {
                                     color: '#70191a'
                                 }
@@ -116,9 +118,6 @@
                         },
                         itemStyle: {
                             normal: {
-                                label: {
-                                    show: true,//地区名字显示
-                                },
                                 // borderColor:'#27304e',
                                 borderColor:'#303030',
                                 // borderType:'dashed',
@@ -126,9 +125,6 @@
                                 shadowBlur: 10
                             },
                             emphasis: {
-                                label: {
-                                    show: true,
-                                },
                                 areaColor:{
                                     type: 'linear',
                                     x: 0,
