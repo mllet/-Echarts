@@ -25,44 +25,20 @@
 <script>
     $(function () {
         var map_data_all = [
-            {name: "广东", value: 6132451},
-            {name: "江苏", value: 5172718},
-            {name: "山东", value: 3902821},
-            {name: "浙江", value: 3521864},
-            {name: "上海", value: 3220602},
-            {name: "四川", value: 2187185},
-            {name: "河南", value: 2118479},
-            {name: "北京", value: 2072724},
-            {name: "辽宁", value: 1873819},
-            {name: "河北", value: 1856329},
-            {name: "湖北", value: 1828628},
-            {name: "安徽", value: 1609458},
-            {name: "福建", value: 1580430},
-            {name: "湖南", value: 1330683},
-            {name: "重庆", value: 1167725},
-            {name: "陕西", value: 1148470},
-            {name: "广西", value: 1122660},
-            {name: "云南", value: 1006150},
-            {name: "江西", value: 997846},
-            {name: "山西", value: 930297},
-            {name: "天津", value: 910958},
-            {name: "吉林", value: 850370},
-            {name: "黑龙江", value: 806544},
-            {name: "贵州", value: 803830},
-            {name: "内蒙古", value: 690607},
-            {name: "新疆", value: 658484},
-            {name: "甘肃", value: 644891},
-            {name: "海南", value: 420054},
-            {name: "宁夏", value: 249478},
-            {name: "青海", value: 151160},
-            {name: "西藏", value: 70704},
-            {name: "台湾", value: 0},
-            {name: "澳门", value: 0},
-            {name: "香港", value: 0}
-        ]
+            {"region_id": "440000", "ent_num": 7844821, "region_name": "\u5e7f\u4e1c\u7701", "level": "1"}, {"region_id": "320000", "ent_num": 6089882, "region_name": "\u6c5f\u82cf\u7701", "level": "1"}, {"region_id": "370000", "ent_num": 4979092, "region_name": "\u5c71\u4e1c\u7701", "level": "1"}, {"region_id": "330000", "ent_num": 4297427, "region_name": "\u6d59\u6c5f\u7701", "level": "1"}, {"region_id": "310000", "ent_num": 3787802, "region_name": "\u4e0a\u6d77\u5e02", "level": "1"}, {"region_id": "410000", "ent_num": 2782198, "region_name": "\u6cb3\u5357\u7701", "level": "1"}, {"region_id": "510000", "ent_num": 2742266, "region_name": "\u56db\u5ddd\u7701", "level": "1"}, {"region_id": "130000", "ent_num": 2407838, "region_name": "\u6cb3\u5317\u7701", "level": "1"}, {"region_id": "110000", "ent_num": 2397152, "region_name": "\u5317\u4eac\u5e02", "level": "1"}, {"region_id": "420000", "ent_num": 2239905, "region_name": "\u6e56\u5317\u7701", "level": "1"}, {"region_id": "210000", "ent_num": 2159046, "region_name": "\u8fbd\u5b81\u7701", "level": "1"}, {"region_id": "340000", "ent_num": 2147936, "region_name": "\u5b89\u5fbd\u7701", "level": "1"}, {"region_id": "350000", "ent_num": 2009773, "region_name": "\u798f\u5efa\u7701", "level": "1"}, {"region_id": "430000", "ent_num": 1665195, "region_name": "\u6e56\u5357\u7701", "level": "1"}, {"region_id": "610000", "ent_num": 1505193, "region_name": "\u9655\u897f\u7701", "level": "1"}, {"region_id": "500000", "ent_num": 1397615, "region_name": "\u91cd\u5e86\u5e02", "level": "1"}, {"region_id": "450000", "ent_num": 1346202, "region_name": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a", "level": "1"}, {"region_id": "360000", "ent_num": 1331647, "region_name": "\u6c5f\u897f\u7701", "level": "1"}, {"region_id": "530000", "ent_num": 1216062, "region_name": "\u4e91\u5357\u7701", "level": "1"}, {"region_id": "140000", "ent_num": 1161870, "region_name": "\u5c71\u897f\u7701", "level": "1"}, {"region_id": "120000", "ent_num": 1089241, "region_name": "\u5929\u6d25\u5e02", "level": "1"}, {"region_id": "520000", "ent_num": 1042341, "region_name": "\u8d35\u5dde\u7701", "level": "1"}, {"region_id": "220000", "ent_num": 995293, "region_name": "\u5409\u6797\u7701", "level": "1"}, {"region_id": "230000", "ent_num": 983777, "region_name": "\u9ed1\u9f99\u6c5f\u7701", "level": "1"}, {"region_id": "150000", "ent_num": 836941, "region_name": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a", "level": "1"}, {"region_id": "620000", "ent_num": 787052, "region_name": "\u7518\u8083\u7701", "level": "1"}, {"region_id": "650000", "ent_num": 761334, "region_name": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a", "level": "1"}, {"region_id": "460000", "ent_num": 522764, "region_name": "\u6d77\u5357\u7701", "level": "1"}, {"region_id": "640000", "ent_num": 298923, "region_name": "\u5b81\u590f\u56de\u65cf\u81ea\u6cbb\u533a", "level": "1"}, {"region_id": "630000", "ent_num": 181318, "region_name": "\u9752\u6d77\u7701", "level": "1"}, {"region_id": "540000", "ent_num": 99700, "region_name": "\u897f\u85cf\u81ea\u6cbb\u533a", "level": "1"}, {"region_id": "710000", "ent_num": 0, "region_name": "\u53f0\u6e7e\u7701", "level": "1"}, {"region_id": "810000", "ent_num": 0, "region_name": "\u9999\u6e2f\u7279\u522b\u884c\u653f\u533a", "level": "1"}, {"region_id": "820000", "ent_num": 0, "region_name": "\u6fb3\u95e8\u7279\u522b\u884c\u653f\u533a", "level": "1"}
+        ].map(
+            function (item) {
+                return {
+                    name: item.region_name,
+                    value: item.ent_num,
+                    region_id: item.region_id,
+                    level: item.level ? item.level : 0
+                }
+            }
+        );
         var myChart = echarts.init(document.getElementById('map_container'));
         myChart.showLoading();
-        $.getJSON('./ChinaJson/100000.js', function (geoJson) {
+        $.getJSON('./ChinaJson/china.js', function (geoJson) {
             myChart.hideLoading();
             echarts.registerMap('100000', geoJson);
             myChart.setOption(option = {
