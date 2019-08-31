@@ -163,7 +163,7 @@
         }
         var my_charts = echarts.init(document.getElementById('map_container'));
         function drow_map(maptype,data){
-            $.getJSON('./ChinaJson/'+maptype+'.js', function (geoJson) {
+            $.getJSON('./ChinaJson/'+maptype+'.json', function (geoJson) {
                 var mapdata3 = [];
                 for (var key in data[maptype].map_data_all) {
                     var onedata = data[maptype].map_data_all[key];
@@ -305,7 +305,16 @@
                                 data: data[maptype].map_data_all
                             }
                         ]
-                    });
+                    }
+                );
+                my_charts.off('click');
+                my_charts.on('click', function (param) {
+                    console.log(param)
+                    var id = param.data.id;
+                    var name = param.name;
+                    my_charts.clear();//清空绘画内容，清空后实例可用
+                    drow_map(id, data_obj);
+                });
             });
         }
         drow_map('1000000', data_obj)
