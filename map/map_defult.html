@@ -38,9 +38,9 @@
         );
         var myChart = echarts.init(document.getElementById('map_container'));
         myChart.showLoading();
-        $.getJSON('./ChinaJson/china.js', function (geoJson) {
+        $.getJSON('./ChinaJson/1000000.js', function (geoJson) {
             myChart.hideLoading();
-            echarts.registerMap('100000', geoJson);
+            echarts.registerMap('1000000', geoJson);
             myChart.setOption(option = {
                 title: {
                     text: '全国数量分布 （2019）',
@@ -76,7 +76,7 @@
                     {
                         name: '全国数量分布',
                         type: 'map',
-                        mapType: '100000', // 自定义扩展图表类型
+                        mapType: '1000000', // 自定义扩展图表类型
                         label: {
                             normal: {
                                 show: true,//地区名字显示
