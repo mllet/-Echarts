@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>地图样式</title>
+    <title>地图样式-颜色渐变、边框任意叠加、地区边框显示可控、下钻省市区</title>
     <script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
     <script src="../echarts.min.js"></script>
     <script src="../echart_3.3.js"></script>
@@ -39,27 +39,57 @@
                         id: "120000",
                         value: 1087242,
                         name: "\u5929\u6d25\u5e02",
-                        "level": "1"
+                        "level": "1",
+                        itemStyle: {
+                            normal: {
+                                borderColor: '#488df9',
+                                borderWidth: 1,
+                            }
+                        },
                     }, {id: "130000", value: 2405260, name: "\u6cb3\u5317\u7701", "level": "1"}, {
                         id: "140000",
                         value: 1160702,
                         name: "\u5c71\u897f\u7701",
-                        "level": "1"
+                        "level": "1",
+                        itemStyle: {
+                            normal: {
+                                borderColor: '#488df9',
+                                borderWidth: 1,
+                            }
+                        },
                     }, {id: "150000", value: 836075, name: "\u5185\u8499\u53e4\u81ea\u6cbb\u533a", "level": "1"}, {
                         id: "210000",
                         value: 2158982,
                         name: "\u8fbd\u5b81\u7701",
-                        "level": "1"
+                        "level": "1",
+                        itemStyle: {
+                            normal: {
+                                borderColor: '#488df9',
+                                borderWidth: 1,
+                            }
+                        },
                     }, {id: "220000", value: 995060, name: "\u5409\u6797\u7701", "level": "1"}, {
                         id: "230000",
                         value: 982917,
                         name: "\u9ed1\u9f99\u6c5f\u7701",
-                        "level": "1"
+                        "level": "1",
+                        itemStyle: {
+                            normal: {
+                                borderColor: '#488df9',
+                                borderWidth: 2,
+                            }
+                        },
                     }, {id: "310000", value: 3783735, name: "\u4e0a\u6d77\u5e02", "level": "1"}, {
                         id: "320000",
                         value: 6089455,
                         name: "\u6c5f\u82cf\u7701",
-                        "level": "1"
+                        "level": "1",
+                        itemStyle: {
+                            normal: {
+                                borderColor: '#488df9',
+                                borderWidth: 1,
+                            }
+                        },
                     }, {id: "330000", value: 4289162, name: "\u6d59\u6c5f\u7701", "level": "1"}, {
                         id: "340000",
                         value: 2145624,
@@ -121,13 +151,34 @@
                 'map_data_all': [
                     {name: "朝阳区", value: 498208, id: 220104},
                     {name: "海淀区", value: 395226, id: 110108},
-                    {name: "丰台区", value: 234487, id: 110106},
+                    {name: "丰台区", value: 234487, id: 110106,
+                        itemStyle: {
+                            normal: {
+                                borderColor: '#488df9',
+                                borderWidth: 1,
+                            }
+                        },
+                    },
                     {name: "通州区", value: 114415, id: 320612},
-                    {name: "昌平区", value: 105656, id: 110114},
+                    {name: "昌平区", value: 105656, id: 110114,
+                        itemStyle: {
+                            normal: {
+                                borderColor: '#488df9',
+                                borderWidth: 1,
+                            }
+                        },
+                    },
                     {name: "东城区", value: 103707, id: 110101},
                     {name: "西城区", value: 101420, id: 110102},
                     {name: "大兴区", value: 85330, id: 110115},
-                    {name: "房山区", value: 68722, id: 110111},
+                    {name: "房山区", value: 68722, id: 110111,
+                        itemStyle: {
+                            normal: {
+                                borderColor: '#488df9',
+                                borderWidth: 1,
+                            }
+                        },
+                    },
                     {name: "怀柔区", value: 63215, id: 110116},
                     {name: "顺义区", value: 59300, id: 110113},
                     {name: "密云区", value: 55098, id: 110228},
@@ -137,10 +188,67 @@
                     {name: "延庆区", value: 17687, id: 110229}],
             }
         };
-
         var my_charts = echarts.init(document.getElementById('map_container'));
         function drow_map(maptype,data){
-
+            $.getJSON('./map_json/json_full/'+maptype+'.json', function (geoJson) {
+                my_charts.hideLoading();
+                echarts.registerMap(maptype+'b', geoJson);
+                my_charts.setOption(
+                    option = {
+                        geo: {
+                            map: maptype+'b',
+                            itemStyle: {
+                                normal: {
+                                    borderColor: '#8bd8fe',
+                                    borderWidth: 3,
+                                    color: {
+                                        type: 'linear-gradient',
+                                        x: 90,
+                                        y: 90,
+                                        x2: 60,
+                                        y2: 50,
+                                        colorStops: [{
+                                            offset: 0,
+                                            color: '#4015a5' // 0% 处的颜色
+                                        }, {
+                                            offset: 1,
+                                            color: '#00A4E5' // 50% 处的颜色
+                                        }],
+                                        global: true // 缺省为 false
+                                    },
+                                    // opacity: 0.5,
+                                },
+                                emphasis: {
+                                    color: {
+                                        type: 'linear-gradient',
+                                        x: 0,
+                                        y: 30,
+                                        x2: 7,
+                                        y2: 0,
+                                        colorStops: [{
+                                            offset: 0,
+                                            color: '#8b371f' // 0% 处的颜色
+                                        }, {
+                                            offset: 1,
+                                            color: '#4a088b' // 50% 处的颜色
+                                        }],
+                                        global: true // 缺省为 false
+                                    },
+                                }
+                            },
+                            zlevel: 2
+                        },
+                        series:[]
+                    }
+                );
+                my_charts.off('click');
+                my_charts.on('click', function (param) {
+                    var id = param.data.id;
+                    var name = param.name;
+                    my_charts.clear();//清空绘画内容，清空后实例可用
+                    drow_map(id, data_obj);
+                });
+            });
             $.getJSON('./map_json/json/'+maptype+'.json', function (geoJson) {
                 my_charts.hideLoading();
                 echarts.registerMap(maptype, geoJson);
@@ -149,52 +257,12 @@
                         title: {
                             subtext: '全国企业分布',
                         },
-                        tooltip: {
-                            trigger: 'item',
-                            formatter: function (params) {
-                                console.log(params)
-                                if ($.isArray(params.value)) {
-                                    // return ''
-                                    return params.name + ' : ' + params.value[params.value.length-1];//鼠标放上去显示value
-                                } else {
-                                    return params.name + ' : ' + params.value;//鼠标放上去显示value
-                                }
-                            },
-                            textStyle: {
-                                color: '#fff'
-                            }
-                        },
-                        geo: {
-                            map: maptype,
-                            itemStyle: {
-                                normal: {
-                                    borderColor: '#498fff',
-                                    borderWidth: 4,
-                                    color: {
-                                        type: 'linear-gradient',
-                                        x: 100,
-                                        y: 100,
-                                        x2: 50,
-                                        y2: 70,
-                                        colorStops: [{
-                                            offset: 0,
-                                            color: '#2b248c' // 0% 处的颜色
-                                        }, {
-                                            offset: 1,
-                                            color: '#00abee' // 50% 处的颜色
-                                        }],
-                                        global: true // 缺省为 false
-                                    },
-                                }
-                            },
-                            zlevel: 2
-                        },
                         series: [
                             {
                                 type: 'map',
                                 map: maptype,
                                 tooltip: {
-                                    show: true
+                                    show: false
                                 },
                                 label: {
                                     normal: {
@@ -222,42 +290,15 @@
                                 roam: true,
                                 itemStyle: {
                                     normal: {
-                                        borderColor: '#498fff',
+                                        borderColor: 'rgba(0,0,0,0)',
                                         borderWidth: 1,
-                                        areaColor: {
-                                            type: 'linear-gradient',
-                                            x: 100,
-                                            y: 100,
-                                            x2: 50,
-                                            y2: 70,
-                                            colorStops: [{
-                                                offset: 0,
-                                                color: '#2b248c' // 0% 处的颜色
-                                            }, {
-                                                offset: 1,
-                                                color: '#00abee' // 50% 处的颜色
-                                            }],
-                                            global: true // 缺省为 false
-                                        },
+                                        areaColor: 'rgb(0,0,0,0)'
                                     },
                                     emphasis: {
-                                        // areaColor: '#372ec7'
-                                        borderWidth:2,
-                                        areaColor: {
-                                            type: 'linear-gradient',
-                                            x: 100,
-                                            y: 90,
-                                            x2: 30,
-                                            y2: 30,
-                                            colorStops: [{
-                                                offset: 0,
-                                                color: '#372fc4' // 0% 处的颜色
-                                            }, {
-                                                offset: 1,
-                                                color: '#00b5fb' // 50% 处的颜色
-                                            }],
-                                            global: true // 缺省为 false
-                                        },
+                                        borderColor: '#488df9',
+                                        borderWidth: 1,
+                                        // areaColor: '#00659C'
+                                        areaColor: 'rgba(0,0,0,0)'
                                     }
                                 },
                                 zlevel: 4,
