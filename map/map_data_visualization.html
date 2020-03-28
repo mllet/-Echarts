@@ -878,10 +878,19 @@
                                 map: maptype,
                                 label: {//地图名称显示
                                     normal: {
-                                        show: false,
+                                        show: true,
+                                        textStyle: {
+                                            color: '#fff',
+                                            fontSize: 16,
+                                            fontFamily:'SourceHanSansCN-Medium',
+                                            textBorderWidth: 1,
+                                            textBorderColor: '#000000',
+                                            textShadowColor: '#000',
+                                            textShadowBlur: 2,
+                                        }
                                     },
                                     emphasis: {
-                                        show: false,
+                                        show: true,
                                     }
                                 },
                                 roam: true,
@@ -934,7 +943,7 @@
                 );
             });
         }
-        drow_map('441700', data_obj)
+        drow_map('441200', data_obj)
     });</script>
 </body>
 </html>
