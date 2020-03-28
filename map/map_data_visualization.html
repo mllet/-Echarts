@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>地图样式-颜色渐变、边框任意叠加、地区边框显示可控、下钻省市区</title>
+    <script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="../echart_3.3.js"></script>
+    <script src="../echarts.min.js"></script>
+
+<!--    <script src="https://cdn.qiyedata.net/opensource/echarts-3.0/echarts.js"></script>-->
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .container{
+            width: 100%;
+            height: 100vh;
+            background: #000036;
+        }
+        #map_container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="map_container">
+
+    </div>
+    <div id="aaaaab" style="width: 1200px;height: 300px;background: #000"></div>
+    <div id="aaaaac" style="width: 1200px;height: 300px;background: #000"></div>
+</div>
+<script>
+    /*
+    * GEO实现阴影与边框
+    */
+    $(function () {
+        var ys_xdata=['0.5-1', '1-2', '2-5', '5-10', '10-20', '20-30', '>30'];
+        var ys_list=famatter_data([18, 7, 6, 5, 2, 1, 0]);
+        var colorList={
+                'aaaaac': ['rgba(0,175,236,0.4)', 'rgba(0,175,236,0.5)', 'rgba(0,175,236,0.6)', 'rgba(0,175,236,0.7)', 'rgba(0,175,236,0.8)', 'rgba(0,175,236,0.9)', 'rgba(0,175,236,1)', 'rgba(0,175,236,0.1)'],
+               };
+        drow_pipe_defult('aaaaac', ys_xdata, ys_list, '87%');
+        function famatter_data(data, a_type) {
+            if ($.isArray(data)) {
+                if (Math.min.apply(null, data) < 1000) {
+                    return data.map(function (item, index) {
+                        return [item, '家']
+                    })
+                } else if (Math.min.apply(null, data) >= 1000) {
+                    return data.map(function (item, index) {
+                        return [(item / 10000).toFixed(1), '万家']
+                    })
+                } else {
+                    return [[], '家']
+                }
+
+            } else {
+                if (data > 1000000) {
+                    return [(data / 10000).toFixed(0), '万家']
+                } else if (data > 10000) {
+                    return [(data / 10000).toFixed(1), '万家']
+                } else {
+                    return [data, '家']
+                }
+            }
+        };
+        function drow_pipe_defult(id, x_data, data) {
+            var data_sum = 0;
+            var pipe_data = x_data.map(function (item, index) {
+                data_sum += +data[index][0];
+                return {name: item, value: data[index][0], unit: data[index][1]}
+            });
+            var option = {
+                color: colorList[id],
+                tooltip: {
+                    trigger: 'item',
+                },
+                series: [{
+                    radius: '80',
+                    center: ['50%', '50%'],
+                    type: 'pie',
+                    startAngle: 90,
+                    minAngle: 20,
+                    selectedMode: 'single',
+                    label: {
+                        normal: {
+                            show: true,
+                            formatter: (params) => {
+                                console.log(params)
+                                let data_obj = (params.data.value + '').replace(/\B(?=(?:\d{3})+\b)/g, ',');
+                                console.log(data_obj)
+                                if (data_sum) {
+                                    return '{name| ' + params.name + '}' + '{datavalue| ' + data_obj + '}' + '{unit|' + params.data.unit + '}' + '{rate|' + ((params.value / data_sum) * 100).toFixed(1) + '%}\n{cirle| }'
+                                } else {
+                                    return '{name| ' + params.name + '}' + '{datavalue| ' + data_obj + '}' + '{unit|' + params.data.unit + '}' + '{rate|0%}\n{cirle| }'
+                                }
+                            },
+                            rich: {
+                                cirle: {
+                                    width: 4,
+                                    height: 4,
+                                    lineHeight: 0,
+                                    radius: "50%",
+                                    borderWidth: 4,
+                                    borderColor: '#00FCFB',
+                                    borderRadius: 8,
+                                    shadowColor: '#00FCFB',
+                                    shadowBlur: 6,
+                                },
+                                datavalue: {
+                                    fontSize: 16,
+                                    color: '#00FCFB',
+                                    lineHeight: 0,
+                                    // padding: [0, 0, 0, 2],
+                                },
+                                name: {
+                                    fontSize: 14,
+                                    color: '#00FCFB',
+                                    lineHeight: 0,
+                                    // padding: [3, 0, 0, 3],
+                                },
+                                unit: {
+                                    fontSize: 14,
+                                    lineHeight: 0,
+                                    padding: [0, 3, 0, 0],
+                                    color: '#00FCFB',
+                                },
+                                rate: {
+                                    fontSize: 14,
+                                    lineHeight: 0,
+                                    padding: [0, 8, 0, 0],
+                                    color: '#00FCFB',
+                                }
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: true,
+                            color: '#00FCFB',
+                            length: 8,
+                            length2: 18,
+                        },
+                        emphasis: {
+                            show: true,
+                            color: '#00FCFB',
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            borderWidth: 0,
+                        },
+                    },
+                    data: pipe_data
+                },
+                    // 边框的设置
+                    {
+                        radius: [80, 86],
+                        center: ['50%', '50%'],
+                        type: 'pie',
+                        label: {
+                            normal: {
+                                show: false
+                            },
+                            emphasis: {
+                                show: false
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                show: false
+                            },
+                            emphasis: {
+                                show: false
+                            }
+                        },
+                        animation: false,
+                        tooltip: {
+                            show: false
+                        },
+                        data: [{
+                            value: 1
+                        }],
+                    }]
+            };
+            var echarts1 = echarts.init(document.getElementById(id));
+            echarts1.setOption(option);
+        };
+        drow_gauge([
+            {
+                name: '开工面积',
+                value: '50',
+                unit: '万㎡',
+                rate:0.8,
+                pos: ['16.6%', '70%']
+            },{
+                name: '复工面积',
+                value: '50',
+                unit: '万㎡',
+                rate:0.6,
+                pos: ['49.8%', '70%']
+            },{
+                name: '招商数量',
+                value: '50',
+                unit: '个',
+                rate:0.4,
+                pos: ['83%', '70%']
+            },]);
+        function drow_gauge(data){
+            // 指定图表的配置项和数据
+            var option = {
+                series: (function () {
+                    var result = [];
+                    (function (data) {
+                        data.forEach(function (item) {
+                            result.push(
+                                // 外围刻度
+                                {
+                                    name: "白色圈刻度",
+                                    type: "gauge",
+                                    radius: '82%',  // 1行3个
+                                    center: item.pos,
+                                    startAngle: 180, //刻度起始
+                                    endAngle: 0, //刻度结束
+                                    splitNumber: 10, //刻度数量
+                                    min: 0,
+                                    max: 100,
+                                    z: 8,
+                                    axisTick: {
+                                        show: false,
+                                        length: 1
+                                    },
+                                    axisLabel: {
+                                        show: true,
+                                        color: '#28d3fb',
+                                        distance: 3,
+                                        fontFamily: ''
+                                    },//刻度标签。
+                                    pointer: {
+                                        show: false,
+                                    },
+                                    axisLine: {
+                                        show: true,
+                                        lineStyle: {
+                                            width: 1,
+                                            color: [
+                                                [1, 'rgba(208,208,208,0)']
+                                            ]
+                                        }
+                                    }, //仪表盘轴线
+                                    splitLine: {
+                                        length: 20,
+                                        lineStyle: {
+                                            width: 1,
+                                            color: '#28d3fb',
+                                        }
+                                    },
+                                    title: {
+                                        show: true,
+                                        color: '#00D8FF',
+                                        offsetCenter: [0, '-15%'],
+                                        fontSize: 20,
+                                        fontWeight: 'bold'
+                                    },
+                                    data: [{
+                                        name: '30%'
+                                    }]
+                                },
+                                {
+                                    name: '外层盘',
+                                    type: 'gauge',
+                                    z: 6,
+                                    radius: '87%',
+                                    startAngle: 180,
+                                    endAngle: 0,
+                                    center: item.pos, //整体的位置设置
+                                    detail: {
+                                        show: true,
+                                        // offsetCenter: [0, '100%'],
+                                        textStyle: {
+                                            fontSize: 20,
+                                            color: '#fff'
+                                        },
+                                        formatter: [
+                                            '{name|' + item.name + '}',
+                                            '{value|' + item.value + '}',
+                                            '{unit|' + item.unit + '}'
+                                        ].join(''),
+                                        rich: {
+                                            name: {
+                                                fontSize: 14,
+                                                lineHeight: 20,
+                                                color: '#ddd'
+                                            }
+                                        }
+                                    },
+                                    axisLine: {
+                                        lineStyle: { // 属性lineStyle控制线条样式//控制外圈位置
+                                            color: [
+                                                [item.rate, '#4ee1f9'],
+                                                [1, '#04274c']
+                                            ],
+                                            width: 18,
+                                            opacity: 0.9, //控制外圈位置，颜色，宽度，透明度
+                                        }
+                                    },
+                                    axisTick: {
+                                        show: false
+                                    },
+                                    splitLine: {
+                                        show: false
+                                    },
+                                    axisLabel: {
+                                        show: false
+                                    },
+                                    pointer: {
+                                        show: false,
+                                        width: 0,
+                                    },
+                                    data: [{
+                                        // show: false,
+                                        value: item.value,
+                                    }],
+                                },
+                                {
+                                    name: '1',
+                                    type: 'gauge',
+                                    z: 5,
+                                    startAngle: 180,
+                                    endAngle: 0,
+                                    center: item.pos, //整体的位置设置
+                                    radius: '100%',
+                                    axisLine: {            // 坐标轴线
+                                        lineStyle: {       // 属性lineStyle控制线条样式
+                                            width: 2,
+                                            color: [
+                                                [1, '#28d3fb']
+                                            ],
+                                            opacity: 0.5
+                                        }
+                                    },
+                                    axisTick: {
+                                        show: false
+                                    },
+                                    axisLabel: {
+                                        show: false,
+                                    },
+                                    splitLine: { // 分隔线
+                                        show: false,
+                                        length: 15,
+                                    },
+                                    detail: {
+                                        show: false,
+                                    },
+                                    data: []
+                                },
+                                {
+                                    name: '2',
+                                    type: 'gauge',
+                                    z: 4,
+                                    startAngle: 180,
+                                    endAngle: 0,
+                                    center: item.pos, //整体的位置设置
+                                    radius: '95%',
+                                    splitNumber: 20, //刻度数量
+                                    axisTick: {
+                                        show: true,
+                                        length: 1,
+                                        lineStyle: {
+                                            lineStyle: {
+                                                opacity: 0.3
+                                            }
+                                        }
+                                    },
+                                    axisLine: {            // 坐标轴线
+                                        lineStyle: {       // 属性lineStyle控制线条样式
+                                            width: 1,
+                                            type: 'solid',
+                                            color: [
+                                                [1, '#28d3fb']
+                                            ],
+                                            opacity: 0.3
+                                        }
+                                    },
+                                    axisLabel: {
+                                        show: false,
+                                    },
+                                    splitLine: { // 分隔线
+                                        show: false,
+                                        length: 15,
+                                    },
+                                    detail: {
+                                        show: false,
+                                    },
+                                    data: []
+                                },
+                                {
+                                    name: '3',
+                                    type: 'gauge',
+                                    z: 3,
+                                    startAngle: 180,
+                                    endAngle: 0,
+                                    center: item.pos, //整体的位置设置
+                                    radius: '50%',
+                                    axisLine: {            // 坐标轴线
+                                        lineStyle: {       // 属性lineStyle控制线条样式
+                                            width: 2,
+                                            color: [
+                                                [1, '#e4f5fc']
+                                            ],
+                                            opacity: 0.5
+                                        }
+                                    },
+                                    axisTick: {
+                                        show: false
+                                    },
+                                    axisLabel: {
+                                        show: false,
+                                    },
+                                    splitLine: { // 分隔线
+                                        show: false,
+                                        length: 15,
+                                    },
+                                    detail: {
+                                        show: false,
+                                    },
+                                    data: []
+                                },
+                                {
+                                    name: '4',
+                                    type: 'gauge',
+                                    z: 2,
+                                    startAngle: 180,
+                                    endAngle: 0,
+                                    center: item.pos, //整体的位置设置
+                                    radius: '45%',
+                                    axisLine: {            // 坐标轴线
+                                        lineStyle: {       // 属性lineStyle控制线条样式
+                                            width: 7,
+                                            color: [
+                                                [1, '#0176dc']
+                                            ],
+                                            opacity: 0.5
+                                        }
+                                    },
+                                    axisTick: {
+                                        show: false
+                                    },
+                                    axisLabel: {
+                                        show: false,
+                                    },
+                                    splitLine: { // 分隔线
+                                        show: false,
+                                        length: 15,
+                                    },
+                                    detail: {
+                                        show: false,
+                                    },
+                                    data: []
+                                },
+                                {
+                                    name: '5',
+                                    type: 'gauge',
+                                    z: 1,
+                                    startAngle: 180,
+                                    endAngle: 0,
+                                    center: item.pos, //整体的位置设置
+                                    radius: '38%',
+                                    axisLine: {            // 坐标轴线
+                                        lineStyle: {       // 属性lineStyle控制线条样式
+                                            width: 1,
+                                            color: [
+                                                [1, '#0176dc']
+                                            ],
+                                            opacity: 0.5
+                                        }
+                                    },
+                                    axisTick: {
+                                        show: false
+                                    },
+                                    axisLabel: {
+                                        show: false,
+                                    },
+                                    splitLine: { // 分隔线
+                                        show: false,
+                                        length: 15,
+                                    },
+                                    detail: {
+                                        show: false,
+                                    },
+                                    data: []
+                                },
+                            );
+                        });
+                    })(data);
+                    return result;
+                })()
+            };
+            var myChart = echarts.init(document.getElementById('aaaaab'));
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }
+
+        var sign_city= [{"code": "500000", "name": "\u91cd\u5e86\u5e02", "value": [106.551556, 29.563009]}, {"code": "110000", "name": "\u5317\u4eac\u5e02", "value": []}, {"code": "320200", "name": "\u65e0\u9521\u5e02", "value": []}, {"code": "310000", "name": "\u4e0a\u6d77\u5e02", "value": []}, {"code": "330100", "name": "\u676d\u5dde\u5e02", "value": []}];
+        var data_obj = {
+            "msg": "\u6210\u529f",
+            "code": 200,
+            "data": [{"ent_num": 5853524, "region_id": "440000", "region_name": "\u5e7f\u4e1c\u7701", "level": "1"}, {
+                "ent_num": 3778258,
+                "region_id": "320000",
+                "region_name": "\u6c5f\u82cf\u7701",
+                "level": "1"
+            }, {"ent_num": 3524396, "region_id": "370000", "region_name": "\u5c71\u4e1c\u7701", "level": "1"}, {
+                "ent_num": 2763295,
+                "region_id": "330000",
+                "region_name": "\u6d59\u6c5f\u7701",
+                "level": "1"
+            }, {"ent_num": 2323372, "region_id": "310000", "region_name": "\u4e0a\u6d77\u5e02", "level": "1"}, {
+                "ent_num": 2094379,
+                "region_id": "410000",
+                "region_name": "\u6cb3\u5357\u7701",
+                "level": "1"
+            }, {"ent_num": 1843310, "region_id": "130000", "region_name": "\u6cb3\u5317\u7701", "level": "1"}, {
+                "ent_num": 1788377,
+                "region_id": "510000",
+                "region_name": "\u56db\u5ddd\u7701",
+                "level": "1"
+            }, {"ent_num": 1704240, "region_id": "110000", "region_name": "\u5317\u4eac\u5e02", "level": "1"}, {
+                "ent_num": 1611247,
+                "region_id": "340000",
+                "region_name": "\u5b89\u5fbd\u7701",
+                "level": "1"
+            }, {"ent_num": 1518744, "region_id": "350000", "region_name": "\u798f\u5efa\u7701", "level": "1"}, {
+                "ent_num": 1491353,
+                "region_id": "420000",
+                "region_name": "\u6e56\u5317\u7701",
+                "level": "1"
+            }, {"ent_num": 1112700, "region_id": "210000", "region_name": "\u8fbd\u5b81\u7701", "level": "1"}, {
+                "ent_num": 1104131,
+                "region_id": "430000",
+                "region_name": "\u6e56\u5357\u7701",
+                "level": "1"
+            }, {"ent_num": 1093210, "region_id": "610000", "region_name": "\u9655\u897f\u7701", "level": "1"}, {
+                "ent_num": 963715,
+                "region_id": "500000",
+                "region_name": "\u91cd\u5e86\u5e02",
+                "level": "1"
+            }, {"ent_num": 961959, "region_id": "360000", "region_name": "\u6c5f\u897f\u7701", "level": "1"}, {
+                "ent_num": 944747,
+                "region_id": "450000",
+                "region_name": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
+                "level": "1"
+            }, {"ent_num": 852658, "region_id": "520000", "region_name": "\u8d35\u5dde\u7701", "level": "1"}, {
+                "ent_num": 821126,
+                "region_id": "530000",
+                "region_name": "\u4e91\u5357\u7701",
+                "level": "1"
+            }, {"ent_num": 803880, "region_id": "140000", "region_name": "\u5c71\u897f\u7701", "level": "1"}, {
+                "ent_num": 629627,
+                "region_id": "120000",
+                "region_name": "\u5929\u6d25\u5e02",
+                "level": "1"
+            }, {"ent_num": 627490, "region_id": "230000", "region_name": "\u9ed1\u9f99\u6c5f\u7701", "level": "1"}, {
+                "ent_num": 582293,
+                "region_id": "220000",
+                "region_name": "\u5409\u6797\u7701",
+                "level": "1"
+            }, {"ent_num": 567578, "region_id": "150000", "region_name": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a", "level": "1"}, {
+                "ent_num": 546420,
+                "region_id": "620000",
+                "region_name": "\u7518\u8083\u7701",
+                "level": "1"
+            }, {"ent_num": 442168, "region_id": "650000", "region_name": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a", "level": "1"}, {
+                "ent_num": 322435,
+                "region_id": "460000",
+                "region_name": "\u6d77\u5357\u7701",
+                "level": "1"
+            }, {"ent_num": 200371, "region_id": "640000", "region_name": "\u5b81\u590f\u56de\u65cf\u81ea\u6cbb\u533a", "level": "1"}, {
+                "ent_num": 128718,
+                "region_id": "630000",
+                "region_name": "\u9752\u6d77\u7701",
+                "level": "1"
+            }, {"ent_num": 90520, "region_id": "540000", "region_name": "\u897f\u85cf\u81ea\u6cbb\u533a", "level": "1"}]
+        }.data.map(function (item) {
+            return {
+                name: item.region_name,
+                value: item.ent_num,
+                region_id: item.region_id,
+                level: item.level ? item.level : 0
+            }
+        });
+        console.log(data_obj);
+        var my_charts = echarts4.init(document.getElementById('map_container'));
+
+        function drow_map(maptype, data) {
+            $.getJSON('./map_json/json_full/' + maptype + '.json', function (geoJson) {
+                my_charts.hideLoading();
+                echarts4.registerMap(maptype + 'b', geoJson);
+                echarts4.registerMap(maptype + 'c', geoJson);
+                echarts4.registerMap(maptype + 'd', geoJson);
+                echarts4.registerMap(maptype + 'e', geoJson);
+                my_charts.setOption(
+                    option = {
+                        geo: [
+                            {
+                                show: true,
+                                roam:false,
+                                map: maptype + 'b',
+                                label: {//地图名称显示
+                                    normal: {
+                                        show: false,
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: '#8bd8fe',
+                                        borderWidth: 3,
+                                        shadowColor: 'rgba(98,201,234,0.5)',
+                                        shadowBlur: 6,
+                                        shadowOffsetX: 6,
+                                        color: {
+                                            type: 'linear-gradient',
+                                            x: 0.5,
+                                            y: 1,
+                                            x2: 0.5,
+                                            y2: 0.2,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#09C4FC' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#06256D' // 50% 处的颜色
+                                            }],
+                                            global: false  // 缺省为 false
+                                        },
+                                        // opacity: 0.5,
+                                    },
+                                    emphasis: {
+                                        borderColor: '#8bd8fe',
+                                        borderWidth: 3,
+                                        shadowColor: 'rgba(98,201,234,0.5)',
+                                        shadowBlur: 6,
+                                        shadowOffsetX: 6,
+                                        color: {
+                                            type: 'linear-gradient',
+                                            x: 0.5,
+                                            y: 1,
+                                            x2: 0.5,
+                                            y2: 0.2,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#09C4FC' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#06256D' // 50% 处的颜色
+                                            }],
+                                            global: false  // 缺省为 false
+                                        },
+                                    }
+                                },
+                                z: 6,
+                                zlevel: 6
+                            },
+                            {
+                                map: maptype + 'c',
+                                label: {//地图名称显示
+                                    normal: {
+                                        show: false,
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: 'rgba(0,0,0,0)',
+                                        shadowColor: 'rgba(98,201,234,1)',
+                                        shadowBlur: -28,
+                                        shadowOffsetX: -12,
+                                        shadowOffsetY: 10,
+                                        color: {
+                                            type: 'linear-gradient',
+                                            x: 0.5,
+                                            y: 1,
+                                            x2: 0.5,
+                                            y2: 0.2,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#09C4FC' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#06256D' // 50% 处的颜色
+                                            }],
+                                            global: false  // 缺省为 false
+                                        },
+                                        // opacity: 0.5,
+                                    },
+                                    emphasis: {
+                                        borderColor: 'rgba(0,0,0,0)',
+                                        shadowColor: 'rgba(98,201,234,1)',
+                                        shadowBlur: -28,
+                                        shadowOffsetX: -12,
+                                        shadowOffsetY: 10,
+                                        color: {
+                                            type: 'linear-gradient',
+                                            x: 0.5,
+                                            y: 1,
+                                            x2: 0.5,
+                                            y2: 0.2,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#09C4FC' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#06256D' // 50% 处的颜色
+                                            }],
+                                            global: false  // 缺省为 false
+                                        },
+                                    }
+                                },
+                                z: 5,
+                                zlevel: 5
+                            },
+                            {
+                                map: maptype + 'd',
+                                label: {//地图名称显示
+                                    normal: {
+                                        show: false,
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        shadowColor: '#0A8DF5',
+                                        shadowBlur: -28,
+                                        shadowOffsetX: -13,
+                                        shadowOffsetY: 11,
+                                        color: {
+                                            type: 'linear-gradient',
+                                            x: 0.5,
+                                            y: 1,
+                                            x2: 0.5,
+                                            y2: 0.2,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#09C4FC' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#06256D' // 50% 处的颜色
+                                            }],
+                                            global: false  // 缺省为 false
+                                        },
+                                        // opacity: 0.5,
+                                    },
+                                    emphasis: {
+                                        shadowColor: '#0A8DF5',
+                                        shadowBlur: -28,
+                                        shadowOffsetX: -13,
+                                        shadowOffsetY: 11,
+                                        color: {
+                                            type: 'linear-gradient',
+                                            x: 0.5,
+                                            y: 1,
+                                            x2: 0.5,
+                                            y2: 0.2,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#09C4FC' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#06256D' // 50% 处的颜色
+                                            }],
+                                            global: false  // 缺省为 false
+                                        },
+                                    }
+                                },
+                                z: 4,
+                                zlevel: 4
+                            },
+                            {
+                                map: maptype + 'd',
+                                label: {//地图名称显示
+                                    normal: {
+                                        show: false,
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        shadowColor: '#0A8DF5',
+                                        shadowBlur: -28,
+                                        shadowOffsetX: -16,
+                                        shadowOffsetY: 13,
+                                        color: {
+                                            type: 'linear-gradient',
+                                            x: 0.5,
+                                            y: 1,
+                                            x2: 0.5,
+                                            y2: 0.2,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#09C4FC' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#06256D' // 50% 处的颜色
+                                            }],
+                                            global: false  // 缺省为 false
+                                        },
+                                        // opacity: 0.5,
+                                    },
+                                    emphasis: {
+                                        shadowColor: '#0A8DF5',
+                                        shadowBlur: -28,
+                                        shadowOffsetX: -16,
+                                        shadowOffsetY: 13,
+                                        color: {
+                                            type: 'linear-gradient',
+                                            x: 0.5,
+                                            y: 1,
+                                            x2: 0.5,
+                                            y2: 0.2,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#09C4FC' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#06256D' // 50% 处的颜色
+                                            }],
+                                            global: false  // 缺省为 false
+                                        },
+                                    }
+                                },
+                                z: 3,
+                                zlevel: 3
+                            }
+                        ],
+                        series: []
+                    }
+                );
+            });
+            $.getJSON('./map_json/json/' + maptype + '.json', function (geoJson) {
+                my_charts.hideLoading();
+                echarts4.registerMap(maptype, geoJson);
+                my_charts.setOption(
+                    option = {
+                        title: {
+                            subtext: '全国企业分布',
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: function (params) {
+                                if ($.isArray(params.value)) {
+                                    // return ''
+                                    return params.name + ' : ' + params.value[params.value.length - 1];//鼠标放上去显示value
+                                } else {
+                                    return params.name + ' : ' + params.value;//鼠标放上去显示value
+                                }
+                            },
+                            textStyle: {
+                                color: '#fff'
+                            }
+                        },
+                        series: [
+                            {
+                                type: 'map',
+                                layoutCenter: ['55%', '50%'],
+                                // zoom:1.2,
+                                map: maptype,
+                                label: {//地图名称显示
+                                    normal: {
+                                        show: false,
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                    }
+                                },
+                                roam: true,
+                                itemStyle: {//地图块样式
+                                    normal: {
+                                        borderColor: '#109FD7',
+                                        borderWidth: 1,
+                                        areaColor: 'rgba(0,0,0,0)',
+                                    },
+                                    emphasis: {
+                                        borderColor: '#109FD7',
+                                        borderWidth: 1,
+                                        areaColor: 'rgba(0,0,0,0)',
+                                    }
+                                },
+                                zlevel: 8,
+                                data: data
+                            },
+                            {
+                                name: 'Sining City',
+                                type: 'effectScatter',
+                                coordinateSystem: 'geo',
+                                data:sign_city,
+                                symbol:'image://data:image/png;base64,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',
+                                symbolSize: [13, 40],
+                                symbolOffset: [0, '-50%'],
+                                showEffectOn: 'render',
+                                rippleEffect: {
+                                    brushType: 'stroke'
+                                },
+                                hoverAnimation: true,
+                                label: {
+                                    normal: {
+                                        formatter: '{b}',
+                                        position: [10, 35],
+                                        show: true,
+                                        fontWeight : '700',
+                                    },
+                                },
+                                itemStyle: {
+                                    fontWeight : '700',
+                                    normal: {
+                                        color: '#67fff5',
+                                    }
+                                },
+                                zlevel: 10
+                            },
+                        ]
+                    }
+                );
+            });
+        }
+
+        drow_map('441500', data_obj)
+    });</script>
+</body>
+</html>
