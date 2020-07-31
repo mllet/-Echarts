@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>地图样式-多色、地图阴影边框任意叠加、下钻省市区</title>
+    <script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="../echarts.min.js"></script>
+    <script src="https://cdn.qiyedata.net/opensource/echarts-4.0/echarts.min.js"></script>
+    <!--    <script src="../echart_3.3.js"></script>-->
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .container{
+            width: 100%;
+            height: 100vh;
+            background: #000036;
+        }
+
+        #map_container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="line" style="width:318px;height: 174px;margin: 50px auto">
+
+</div>
+<script>
+    var my_charts = echarts.init(document.getElementById('line'));
+    my_charts.setOption(
+        option = {
+            backgroundColor: "#0027C1",
+            tooltip: {
+                trigger: 'item',
+                formatter: "{b} : {c}"
+            },
+            grid: {
+                top: 0,
+                left: "2%",
+                right: 0,
+                bottom: 30,
+                containLabel: true,
+                borderWidth: 0.5
+            },
+            itemStyle:{
+                color: 'rgba(0,79,225,0.6)',
+            },
+            calculable: true,
+            series: [
+                {
+                    name: '漏斗图',
+                    type: 'funnel',
+                    left: "6%",
+                    top: '10%',
+                    bottom: '10%',
+                    width: '60%',
+                    height: '80%',
+                    minSize: 0,
+                    maxSize: "100%",
+                    sort: "none",
+                    gap: 3,
+                    label: {
+                        normal: {
+                            color: '#2BB2FF',
+                            fontSize: 12,
+                            position: 'right',
+                        }
+                    },
+                    labelLine: {//视觉引导线
+                        length:45,
+                        lineStyle: {
+                            type: 'dashed'
+                        },
+                    },
+                    itemStyle:{
+                        borderColor: '#23A5F7',
+                        borderWidth: 1,
+                    },
+                    data: [
+                        {
+                            value: 4575,
+                            name: '生存一年以内'
+                        },
+                        {
+                            value: 15852,
+                            name: '生存1-3年'
+                        },
+                        {
+                            value: 7554,
+                            name: '生存3-5年'
+                        },
+                        {
+                            value: 4463,
+                            name: '生存5-10年'
+                        },
+                        {
+                            value: 463,
+                            name: '生存10-20年'
+                        },
+
+                    ]
+                }
+            ]
+        }
+    )
+
+</script>
+</body>
+</html>

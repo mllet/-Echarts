@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>地图样式-多色、地图阴影边框任意叠加、下钻省市区</title>
     <script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
-    <script src="../echarts.min.js"></script>
+<!--    <script src="../echarts.min.js"></script>-->
     <script src="../echart_3.3.js"></script>
     <style>
         *{
@@ -161,11 +161,11 @@
                 max: n == 0 ? 0 : markData[n - 1]
             }
         }
-        var my_charts = echarts.init(document.getElementById('map_container'));
+        var my_charts = echarts4.init(document.getElementById('map_container'));
         function drow_map(maptype,data){
             $.getJSON('./map_json/json_full/'+maptype+'.json', function (geoJson) {
                 my_charts.hideLoading();
-                echarts.registerMap(maptype+'b', geoJson);
+                echarts4.registerMap(maptype+'b', geoJson);
                 my_charts.setOption(
                     option = {
                         geo: {
@@ -237,7 +237,7 @@
                     mapdata3.push(val);
                 }
                 my_charts.hideLoading();
-                echarts.registerMap(maptype, geoJson);
+                echarts4.registerMap(maptype, geoJson);
                 my_charts.setOption(
                     option = {
                         title: {

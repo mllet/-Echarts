@@ -89,9 +89,7 @@
                         normal: {
                             show: true,
                             formatter: (params) => {
-                                console.log(params)
                                 let data_obj = (params.data.value + '').replace(/\B(?=(?:\d{3})+\b)/g, ',');
-                                console.log(data_obj)
                                 if (data_sum) {
                                     return '{name| ' + params.name + '}' + '{datavalue| ' + data_obj + '}' + '{unit|' + params.data.unit + '}' + '{rate|' + ((params.value / data_sum) * 100).toFixed(1) + '%}\n{cirle| }'
                                 } else {
@@ -592,11 +590,10 @@
                 level: item.level ? item.level : 0
             }
         });
-        console.log(data_obj);
         var my_charts = echarts4.init(document.getElementById('map_container'));
 
         function drow_map(maptype, data) {
-            $.getJSON('./map_json/json_full/' + maptype + '.json', function (geoJson) {
+            $.getJSON('./map_json_1.0/json_full/' + maptype + '.json', function (geoJson) {
                 my_charts.hideLoading();
                 echarts4.registerMap(maptype + 'b', geoJson);
                 echarts4.registerMap(maptype + 'c', geoJson);
@@ -848,7 +845,7 @@
                     }
                 );
             });
-            $.getJSON('./map_json/json/' + maptype + '.json', function (geoJson) {
+            $.getJSON('./map_json_1.0/json/' + maptype + '.json', function (geoJson) {
                 my_charts.hideLoading();
                 echarts4.registerMap(maptype, geoJson);
                 my_charts.setOption(
@@ -878,16 +875,7 @@
                                 map: maptype,
                                 label: {//地图名称显示
                                     normal: {
-                                        show: true,
-                                        textStyle: {
-                                            color: '#fff',
-                                            fontSize: 16,
-                                            fontFamily:'SourceHanSansCN-Medium',
-                                            textBorderWidth: 1,
-                                            textBorderColor: '#000000',
-                                            textShadowColor: '#000',
-                                            textShadowBlur: 2,
-                                        }
+                                        show: false,
                                     },
                                     emphasis: {
                                         show: true,
@@ -943,7 +931,10 @@
                 );
             });
         }
-        drow_map('330300', data_obj)
+        my_charts.on('click',function (e) {
+            console.log(e)
+        });
+        drow_map('1000000', data_obj)
     });</script>
 </body>
 </html>

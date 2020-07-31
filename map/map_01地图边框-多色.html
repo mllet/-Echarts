@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>地图样式-地图阴影（geo实现）、下钻三级</title>
+    <title>地图样式-多色、地图阴影边框任意叠加、下钻省市区</title>
     <script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
-    <script src="../echarts.min.js"></script>
+    <!--    <script src="../echarts.min.js"></script>-->
+    <script src="../echart_3.3.js"></script>
     <style>
         *{
             padding: 0;
@@ -136,6 +137,7 @@
                     {name: "延庆区", value: 17687, id: 110229}],
             }
         };
+
         // 四分位
         function count(data) {
             var data = data.slice(0);
@@ -155,15 +157,130 @@
             } else if (n == 1) {
                 Q3 = parseFloat(markData[0]);
             }
-            console.log(Q3)
             return {
                 Q3: Q3.toFixed(2),
                 max: n == 0 ? 0 : markData[n - 1]
             }
         }
-        var my_charts = echarts.init(document.getElementById('map_container'));
-        function drow_map(maptype,data){
-            $.getJSON('./map_json/json/'+maptype+'.json', function (geoJson) {
+
+        var my_charts = echarts4.init(document.getElementById('map_container'));
+
+        function drow_map(maptype, data) {
+            $.getJSON('./map_json/json_full/' + maptype + '.json', function (geoJson) {
+                my_charts.hideLoading();
+                echarts4.registerMap('hotmapa', geoJson);
+                echarts4.registerMap('hotmapb', geoJson);
+                echarts4.registerMap('hotmapc', geoJson);
+                echarts4.registerMap('hotmapd', geoJson);
+                my_charts.setOption(
+                    option = {
+                        geo: [
+                            {
+                                map: 'hotmapa',
+                                zoom: 1.2,
+                                label: {//地图名称显示
+                                    normal: {
+                                        show: false,
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: '#8bd8fe',
+                                        borderWidth: 3,
+                                        shadowColor: 'rgba(98,201,234,0.5)',
+                                        shadowBlur: 6,
+                                        shadowOffsetX: 6,
+                                        // opacity: 0.5,
+                                    },
+                                },
+                                z: 6,
+                                zlevel: 6
+                            },
+                            {
+                                map: 'hotmapb',
+                                zoom: 1.2,
+                                label: {//地图名称显示
+                                    normal: {
+                                        show: false,
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: 'rgba(0,0,0,0)',
+                                        shadowColor: 'rgba(98,201,234,1)',
+                                        shadowBlur: -34,
+                                        shadowOffsetX: -18,
+                                        shadowOffsetY: 16,
+                                        // opacity: 0.5,
+                                    }
+                                },
+                                z: 5,
+                                zlevel: 5
+                            },
+                            {
+                                map: 'hotmapc',
+                                zoom: 1.2,
+                                label: {//地图名称显示
+                                    normal: {
+                                        show: false,
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        shadowColor: '#0A8DF5',
+                                        shadowBlur: -34,
+                                        shadowOffsetX: -19,
+                                        shadowOffsetY: 17,
+                                        // opacity: 0.5,
+                                    },
+                                },
+                                z: 4,
+                                zlevel: 4
+                            },
+                            {
+                                map: 'hotmapd',
+                                zoom: 1.2,
+                                label: {//地图名称显示
+                                    normal: {
+                                        show: false,
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        shadowColor: '#0A8DF5',
+                                        shadowBlur: -34,
+                                        shadowOffsetX: -24,
+                                        shadowOffsetY: 19,
+                                    },
+                                },
+                                z: 3,
+                                zlevel: 3
+                            }
+                        ],
+                        series: []
+                    }
+                );
+                my_charts.off('click');
+                my_charts.on('click', function (param) {
+                    var id = param.data.id;
+                    var name = param.name;
+                    my_charts.clear();//清空绘画内容，清空后实例可用
+                    drow_map(id, data_obj);
+                });
+            });
+            $.getJSON('./map_json/json/' + maptype + '.json', function (geoJson) {
                 var mapdata3 = [];
                 for (var key in data[maptype].map_data_all) {
                     var onedata = data[maptype].map_data_all[key];
@@ -171,24 +288,20 @@
                     if (!val) {
                         val = ""
                     } else {
-                        // val=val.replace(/^[1-9]\d*/i,'')
                     }
                     mapdata3.push(val);
                 }
                 my_charts.hideLoading();
-                echarts.registerMap(maptype, geoJson);
+                echarts4.registerMap(maptype, geoJson);
                 my_charts.setOption(
                     option = {
-                        title: {
-                            subtext: '全国企业分布',
-                        },
                         tooltip: {
                             trigger: 'item',
                             formatter: function (params) {
                                 console.log(params)
                                 if ($.isArray(params.value)) {
                                     // return ''
-                                    return params.name + ' : ' + params.value[params.value.length-1];//鼠标放上去显示value
+                                    return params.name + ' : ' + params.value[params.value.length - 1];//鼠标放上去显示value
                                 } else {
                                     return params.name + ' : ' + params.value;//鼠标放上去显示value
                                 }
@@ -198,68 +311,22 @@
                             }
                         },
                         visualMap: {
+                            show: true,
                             min: 0,
                             max: parseFloat(count(mapdata3).Q3),
                             text: ['高', '低'],
                             realtime: false,
-                            calculable: true,
-                            inRange: {
-                                // color: ['#0098EB', 'rgba(6,61,235,1)', '#0000AC'],
-                                color: ['#16edff', '#a665f9', '#6865f9'],
-                            },
+                            orient:'vertical',
+                            calculable: false,
                             textStyle: {
-                                color: '#fff'
-                            }
-                        },
-                        geo: {
-                            map: maptype,
-                            itemStyle: {
-                                normal: {
-                                    borderColor: '#9757cf',
-                                    borderWidth: 6,
-                                    shadowColor: '#4a088b',
-                                    shadowOffsetX: '15',
-                                    shadowOffsetY: '30',
-                                    color: {
-                                        type: 'linear-gradient',
-                                        x: 0,
-                                        y: 30,
-                                        x2: 7,
-                                        y2: 0,
-                                        colorStops: [{
-                                            offset: 0,
-                                            color: '#4a088b' // 0% 处的颜色
-                                        }, {
-                                            offset: 1,
-                                            color: '#6908bf' // 50% 处的颜色
-                                        }],
-                                        global: true // 缺省为 false
-                                    },
-                                },
-                                emphasis: {
-                                    borderColor: '#9757cf',
-                                    borderWidth: 6,
-                                    shadowColor: '#4a088b',
-                                    shadowOffsetX: '15',
-                                    shadowOffsetY: '30',
-                                    color: {
-                                        type: 'linear-gradient',
-                                        x: 0,
-                                        y: 30,
-                                        x2: 7,
-                                        y2: 0,
-                                        colorStops: [{
-                                            offset: 0,
-                                            color: '#4a088b' // 0% 处的颜色
-                                        }, {
-                                            offset: 1,
-                                            color: '#6908bf' // 50% 处的颜色
-                                        }],
-                                        global: true // 缺省为 false
-                                    },
-                                }
+                                color: '#fff',
+                                padding: 10
                             },
-                            zlevel: 2
+                            padding: [50, 50],
+                            inRange: {
+                                color: ['#0017BE', '#0038C7', '#005BD4', '#0077D5', '#00EDFA'],
+                                symbolSize: [100, 30]
+                            },
                         },
                         series: [
                             {
@@ -268,6 +335,7 @@
                                 tooltip: {
                                     show: false
                                 },
+                                zoom: 1.2,
                                 label: {
                                     normal: {
                                         show: false,
@@ -291,17 +359,17 @@
                                         }
                                     }
                                 },
-                                roam: true,
+                                roam: false,
                                 itemStyle: {
                                     normal: {
-                                        borderColor: '#D2FFFF',
+                                        borderColor: '#32B9EE',
                                         borderWidth: 1.5,
                                     },
                                     emphasis: {
-                                        areaColor: 'rgb(111,81,248)'
+                                        areaColor: '#0017aa'
                                     }
                                 },
-                                zlevel: 4,
+                                zlevel: 8,
                                 data: data[maptype].map_data_all
                             }
                         ]
@@ -309,16 +377,15 @@
                 );
                 my_charts.off('click');
                 my_charts.on('click', function (param) {
-                    console.log(param)
+                    console.log(param);
                     var id = param.data.id;
                     var name = param.name;
                     my_charts.clear();//清空绘画内容，清空后实例可用
                     drow_map(id, data_obj);
                 });
-                var mapFeatures = echarts.getMap(1000000).geoJson.features;
-                console.log(mapFeatures)
             });
         }
+
         drow_map('1000000', data_obj)
     });
 
